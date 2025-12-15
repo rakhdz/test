@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>جنائز GPS - جمعية رعاية الأيتام</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-map-marker-alt"></i> جنائز GPS</h1>
+            <p>حدد مواقع الجنائز القريبة منك بسهولة</p>
+        </div>
+
+        <div class="main-buttons">
+            <button class="btn btn-primary" onclick="showSection('addForm')">
+                <i class="fas fa-plus-circle"></i>
+                <span>إضافة جنازة</span>
+            </button>
+            <button class="btn btn-secondary" onclick="showSection('mapSection')">
+                <i class="fas fa-search-location"></i>
+                <span>جنائز قريبة</span>
+            </button>
+        </div>
+
+        <!-- نموذج الإضافة -->
+        <div id="addForm" class="section">
+            <h2><i class="fas fa-plus"></i> إضافة جنازة جديدة</h2>
+            <input id="deceasedName" type="text" placeholder="اسم المتوفى">
+            <input id="prayerTime" type="datetime-local">
+            <input id="mosqueName" type="text" placeholder="اسم المسجد">
+            
+            <div>
+                <button class="btn-action" onclick="showLocationMap()">
+                    <i class="fas fa-location-arrow"></i> حدد موقع بيت المتوفى
+                </button>
+                <input id="locationDisplay" readonly placeholder="اضغط على الزر لتحديد الموقع" style="margin-top: 10px;">
+                <div id="gpsStatus" class="gps-status" style="display:none;"></div>
+            </div>
+
+            <!-- خريطة تحديد الموقع -->
+            <div id="locationSection" class="location-section">
+                <h3><i class="fas fa-map-marked-alt"></i> اختر موقع بيت المتوفى</h3>
+                <div id="locationMap"></div>
+                <button class="btn-action" onclick="confirmLocation()" style="background: #00d4aa;">
+                    <i class="fas fa-check"></i> تأكيد هذا الموقع
+                </button>
+                <button class="btn-action" onclick="hideLocationMap()" style="background: #ff6b6b;">
+                    <i class="fas fa-times"></i> إلغاء
+                </button>
+            </div>
+
+            <button class="btn-action" style="width: 100%; background: #ff6b6b; font-size: 1.2em; margin-top: 20px;" onclick="publishFuneral()">
+                <i class="fas fa-paper-plane"></i> نشر الجنازة الآن
+            </button>
+        </div>
+
+        <!-- قسم الخريطة -->
+        <div id="mapSection" class="section">
+            <h2><i class="fas fa-map"></i> الجنائز القريبة</h2>
+            <div id="map"></div>
+            <div class="map-controls">
+                <button class="btn-action" onclick="refreshMap()">
+                    <i class="fas fa-sync-alt"></i> تحديث الخريطة
+                </button>
+                <button class="btn-action" onclick="centerUser()" id="centerBtn">
+                    <i class="fas fa-crosshairs"></i> موقعي الحالي
+                </button>
+            </div>
+            <div id="funeralsList" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <i class="fas fa-heart" style="color: #ff6b6b;"></i> 
+        كل الحقوق محفوظة لـ جمعية رعاية الأيتام الخيرية
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
+
