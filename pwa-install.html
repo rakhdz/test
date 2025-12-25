@@ -3,104 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>711</title>
+<title>زر تثبيت التطبيق</title>
 
-<!-- Alexandria Font -->
-<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;700&display=swap" rel="stylesheet">
+<!-- خط Alexandria -->
+<link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@700&display=swap" rel="stylesheet">
 
 <style>
-  body {
-    margin: 0;
-    font-family: 'Alexandria', sans-serif;
-    min-height: 100vh;
-    background: #f4f4f4;
-  }
-
   /* الزر العائم */
-  #install-btn {
+  #installBanner {
     position: fixed;
-    bottom: 30px;
-    right: 30px;
-    background-color: #1e5631; /* أخضر داكن */
-    color: #fff;
+    bottom: 20px;
+    right: 20px;
+    background-color: #006400; /* أخضر داكن */
+    color: white;
     font-family: 'Alexandria', sans-serif;
     font-size: 18px;
-    padding: 14px 22px;
+    padding: 12px 20px;
     border-radius: 50px;
     display: flex;
     align-items: center;
-    gap: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(30, 86, 49, 0.7), 0 5px 15px rgba(0,0,0,0.3);
     z-index: 9999;
-    transform: translateY(30px);
-    opacity: 0;
-    animation: slideUp 0.8s forwards;
+    animation: slideUp 1s ease;
   }
 
-  #install-btn:hover {
-    transform: translateY(0) scale(1.05);
-    box-shadow: 0 0 30px rgba(30, 86, 49, 0.9), 0 5px 20px rgba(0,0,0,0.4);
-  }
-
-  @keyframes slideUp {
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
-
-  /* الدائرة الحمراء المتوهجة */
-  .red-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
+  #installDot {
+    width: 12px;
+    height: 12px;
     background-color: red;
-    box-shadow: 0 0 8px red, 0 0 15px rgba(255,0,0,0.5);
+    border-radius: 50%;
+    margin-left: 12px;
     animation: blink 2s infinite;
   }
 
+  /* حركات */
   @keyframes blink {
     0%, 50%, 100% { opacity: 1; }
     25%, 75% { opacity: 0; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 </style>
 </head>
 <body>
 
-<!-- زر التثبيت العائم -->
-<div id="install-btn">
-  <span>ثبت التطبيق الآن</span>
-  <div class="red-dot"></div>
+<!-- زر تثبيت التطبيق -->
+<div id="installBanner">
+  <span id="installText">ثبت التطبيق</span>
+  <span id="installDot"></span>
 </div>
 
 <script>
-let deferredPrompt;
-const installBtn = document.getElementById('install-btn');
+  const installBanner = document.getElementById('installBanner');
 
-// حدث قبل تثبيت التطبيق
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  installBtn.style.display = 'flex';
-});
+  let deferredPrompt;
 
-// عند الضغط على الزر
-installBtn.addEventListener('click', async () => {
-  if (deferredPrompt) {
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      installBtn.style.display = 'none'; // إخفاء الزر عند التثبيت
+  // دعم PWA
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBanner.style.display = 'flex';
+  });
+
+  // زر الضغط
+  installBanner.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      installBanner.style.display = 'none';
+      deferredPrompt = null;
+    } else {
+      // إذا لم يكن PWA مدعوم، عرض رسالة للمستخدم
+      alert("لتثبيت التطبيق على الشاشة الرئيسية: اضغط على زر المتصفح ثم 'إضافة إلى الشاشة الرئيسية'");
     }
-    deferredPrompt = null;
-  }
-});
+  });
 
-// إخفاء الزر إذا تم التثبيت مسبقًا
-window.addEventListener('appinstalled', () => {
-  installBtn.style.display = 'none';
-});
+  // إخفاء الزر عند التثبيت
+  window.addEventListener('appinstalled', () => {
+    installBanner.style.display = 'none';
+  });
+
+  // إظهار الزر دائمًا في حالة عدم دعم beforeinstallprompt
+  window.addEventListener('load', () => {
+    if (!deferredPrompt) {
+      installBanner.style.display = 'flex';
+    }
+  });
 </script>
 
 </body>
